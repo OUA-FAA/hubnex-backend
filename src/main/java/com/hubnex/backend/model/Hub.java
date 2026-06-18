@@ -26,9 +26,6 @@ public class Hub {
     @Column(unique = true)
     private String barcode;
 
-    @Column(nullable = false)
-    private String ville;
-
     private String adresse;
     private String telephone;
 
@@ -42,6 +39,18 @@ public class Hub {
     @JsonIgnore
     @OneToMany(mappedBy = "hub")
     private List<User> utilisateurs;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "hub")
+    private List<Etiquette> etiquettes;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "hubPrincipal")
+    private List<DocketRecord> docketRecordsPrincipaux;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "hubSecondaire")
+    private List<DocketRecord> docketRecordsSecondaires;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

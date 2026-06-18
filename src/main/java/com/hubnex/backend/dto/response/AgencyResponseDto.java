@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 public class AgencyResponseDto {
     private Long id;
     private String nom;
-    private String ville;
     private String adresse;
     private String telephone;
     private String responsable;

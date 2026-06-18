@@ -14,9 +14,6 @@ public class AgencyRequestDto {
     @NotBlank
     private String nom;
 
-    @NotBlank
-    private String ville;
-
     private String adresse;
     private String telephone;
     private String responsable;

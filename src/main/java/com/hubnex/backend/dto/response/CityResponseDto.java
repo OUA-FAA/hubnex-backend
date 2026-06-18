@@ -2,6 +2,8 @@ package com.hubnex.backend.dto.response;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -11,6 +13,11 @@ public class CityResponseDto {
     private Long id;
     private String name;
     private String code;
-    private Long agencyId;
-    private String agencyNom;
+    private Boolean active;
+    private Long agenceId;
+    private String agenceNom;
+    private Double latitude;
+    private Double longitude;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 }

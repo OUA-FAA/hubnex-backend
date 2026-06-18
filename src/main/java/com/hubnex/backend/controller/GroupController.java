@@ -36,6 +36,11 @@ public class GroupController {
         return groupService.update(id, dto);
     }
 
+    @PatchMapping("/{id}")
+    public GroupResponseDto patch(@PathVariable Long id, @RequestBody GroupRequestDto dto) {
+        return groupService.patch(id, dto);
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         groupService.delete(id);

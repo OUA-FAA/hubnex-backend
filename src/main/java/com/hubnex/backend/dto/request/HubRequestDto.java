@@ -15,9 +15,6 @@ public class HubRequestDto {
 
     private String barcode;
 
-    @NotBlank
-    private String ville;
-
     private String adresse;
     private String telephone;
     private Boolean actif;

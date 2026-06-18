@@ -1,10 +1,10 @@
 package com.hubnex.backend.dto.request;
 
-import com.hubnex.backend.model.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
+
+import java.util.Set;
 
 @Getter
 @Setter
@@ -26,11 +26,18 @@ public class UserRequestDto {
 
     private String telephone;
 
-    @NotNull
-    private Role role;
+    private String role;
+
+    private Long roleId;
+    private String roleName;
 
     private Boolean actif;
     private Long agenceId;
     private Long hubId;
+    private Long cityId;
+    private Set<Long> agenceIds;
+    private Set<Long> hubIds;
+    private Set<Long> agencyIds;
+    private Set<Long> cityIds;
     private String token;
 }

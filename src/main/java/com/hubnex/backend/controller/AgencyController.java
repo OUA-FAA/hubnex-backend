@@ -37,6 +37,11 @@ public class AgencyController {
         return agencyService.getByHubId(hubId);
     }
 
+    @GetMapping("/by-hubs")
+    public List<AgencyResponseDto> getByHubIds(@RequestParam List<Long> hubIds) {
+        return agencyService.getByHubIds(hubIds);
+    }
+
     @PostMapping
     public AgencyResponseDto create(@Valid @RequestBody AgencyRequestDto dto) {
         return agencyService.create(dto);
@@ -45,6 +50,11 @@ public class AgencyController {
     @PutMapping("/{id}")
     public AgencyResponseDto update(@PathVariable Long id, @Valid @RequestBody AgencyRequestDto dto) {
         return agencyService.update(id, dto);
+    }
+
+    @PatchMapping("/{id}")
+    public AgencyResponseDto patch(@PathVariable Long id, @RequestBody AgencyRequestDto dto) {
+        return agencyService.patch(id, dto);
     }
 
     @DeleteMapping("/{id}")

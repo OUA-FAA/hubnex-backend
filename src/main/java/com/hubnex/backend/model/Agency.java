@@ -23,9 +23,6 @@ public class Agency {
     @Column(nullable = false)
     private String nom;
 
-    @Column(nullable = false)
-    private String ville;
-
     private String adresse;
     private String telephone;
     private String responsable;
@@ -40,6 +37,10 @@ public class Agency {
     @JsonIgnore
     @OneToMany(mappedBy = "agence")
     private List<User> utilisateurs;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "agence")
+    private List<City> cities;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;

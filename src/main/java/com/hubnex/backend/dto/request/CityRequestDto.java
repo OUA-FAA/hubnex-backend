@@ -14,5 +14,8 @@ public class CityRequestDto {
     private String name;
 
     private String code;
-    private Long agencyId;
+    private Boolean active;
+    private Long agenceId;
+    private Double latitude;
+    private Double longitude;
 }

@@ -48,10 +48,18 @@ public class AgencyService {
                 .toList();
     }
 
+    public List<AgencyResponseDto> getByHubIds(List<Long> hubIds) {
+        if (hubIds == null || hubIds.isEmpty()) {
+            return List.of();
+        }
+        return agencyRepository.findByHub_IdIn(hubIds).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
     public AgencyResponseDto create(AgencyRequestDto dto) {
         Agency agency = Agency.builder()
                 .nom(dto.getNom())
-                .ville(dto.getVille())
                 .adresse(dto.getAdresse())
                 .telephone(dto.getTelephone())
                 .responsable(dto.getResponsable())
@@ -66,12 +74,36 @@ public class AgencyService {
         Agency agency = getEntityById(id);
 
         agency.setNom(dto.getNom());
-        agency.setVille(dto.getVille());
         agency.setAdresse(dto.getAdresse());
         agency.setTelephone(dto.getTelephone());
         agency.setResponsable(dto.getResponsable());
         agency.setActive(dto.getActive() != null ? dto.getActive() : agency.getActive());
         agency.setHub(resolveHub(dto.getHubId()));
+
+        return mapToResponse(agencyRepository.save(agency));
+    }
+
+    public AgencyResponseDto patch(Long id, AgencyRequestDto dto) {
+        Agency agency = getEntityById(id);
+
+        if (dto.getNom() != null) {
+            agency.setNom(dto.getNom());
+        }
+        if (dto.getAdresse() != null) {
+            agency.setAdresse(dto.getAdresse());
+        }
+        if (dto.getTelephone() != null) {
+            agency.setTelephone(dto.getTelephone());
+        }
+        if (dto.getResponsable() != null) {
+            agency.setResponsable(dto.getResponsable());
+        }
+        if (dto.getActive() != null) {
+            agency.setActive(dto.getActive());
+        }
+        if (dto.getHubId() != null) {
+            agency.setHub(resolveHub(dto.getHubId()));
+        }
 
         return mapToResponse(agencyRepository.save(agency));
     }
@@ -101,7 +133,6 @@ public class AgencyService {
         return AgencyResponseDto.builder()
                 .id(agency.getId())
                 .nom(agency.getNom())
-                .ville(agency.getVille())
                 .adresse(agency.getAdresse())
                 .telephone(agency.getTelephone())
                 .responsable(agency.getResponsable())

@@ -45,7 +45,6 @@ public class HubService {
         Hub hub = Hub.builder()
                 .nom(dto.getNom())
                 .barcode(dto.getBarcode())
-                .ville(dto.getVille())
                 .adresse(dto.getAdresse())
                 .telephone(dto.getTelephone())
                 .actif(dto.getActif() != null ? dto.getActif() : true)
@@ -60,7 +59,6 @@ public class HubService {
 
         hub.setNom(dto.getNom());
         hub.setBarcode(dto.getBarcode());
-        hub.setVille(dto.getVille());
         hub.setAdresse(dto.getAdresse());
         hub.setTelephone(dto.getTelephone());
         hub.setActif(dto.getActif() != null ? dto.getActif() : hub.getActif());
@@ -78,9 +76,6 @@ public class HubService {
         if (dto.getBarcode() != null) {
             validateBarcodeUniqueForUpdate(id, dto.getBarcode());
             hub.setBarcode(dto.getBarcode());
-        }
-        if (dto.getVille() != null) {
-            hub.setVille(dto.getVille());
         }
         if (dto.getAdresse() != null) {
             hub.setAdresse(dto.getAdresse());
@@ -144,7 +139,6 @@ public class HubService {
                 .id(hub.getId())
                 .nom(hub.getNom())
                 .barcode(hub.getBarcode())
-                .ville(hub.getVille())
                 .adresse(hub.getAdresse())
                 .telephone(hub.getTelephone())
                 .actif(hub.getActif())

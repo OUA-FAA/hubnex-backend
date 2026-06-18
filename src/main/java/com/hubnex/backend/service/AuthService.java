@@ -8,18 +8,19 @@ import com.hubnex.backend.model.User;
 import com.hubnex.backend.repository.UserRepository;
 import com.hubnex.backend.security.TokenBlacklistService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final AuthenticationManager authenticationManager;
+    private static final String INACTIVE_ACCOUNT_MESSAGE =
+            "Votre compte est d\u00e9sactiv\u00e9. Contactez l\u2019administrateur.";
+
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final UserService userService;
@@ -27,23 +28,39 @@ public class AuthService {
     private final TokenBlacklistService tokenBlacklistService;
 
     public AuthResponseDto login(LoginRequestDto dto) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(dto.getLogin(), dto.getMotDePasse()));
+        String email = dto.getEmail();
+        User user = userRepository.findWithAccessByEmail(email)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou mot de passe invalide"));
 
-        User user = userRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new BadCredentialsException("Invalid login or password"));
+        if (!Boolean.TRUE.equals(user.getActif())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, INACTIVE_ACCOUNT_MESSAGE);
+        }
+
+        if (!passwordEncoder.matches(dto.getMotDePasse(), user.getMotDePasse())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Email ou mot de passe invalide");
+        }
+
         String token = jwtService.generateToken(user);
 
+        UserResponseDto userResponse = userService.getAuthenticatedProfile(user.getId());
         return AuthResponseDto.builder()
                 .token(token)
-                .utilisateur(userService.getById(user.getId()))
+                .utilisateur(userResponse)
+                .userId(userResponse.getId())
+                .login(userResponse.getLogin())
+                .email(userResponse.getEmail())
+                .roleId(userResponse.getRoleId())
+                .roleName(userResponse.getRoleName())
+                .groups(userResponse.getGroups())
+                .accessRights(userResponse.getAccessRights())
+                .permissions(userResponse.getPermissions())
                 .build();
     }
 
     public UserResponseDto me(String login) {
-        User user = userRepository.findByLogin(login)
+        User user = userRepository.findWithAccessByLogin(login)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return userService.getById(user.getId());
+        return userService.getAuthenticatedProfile(user.getId());
     }
 
     public void logout(String authorizationHeader) {
@@ -62,7 +79,7 @@ public class AuthService {
         }
 
         user.setMotDePasse(passwordEncoder.encode(dto.getNouveauMotDePasse()));
-        return userService.getById(userRepository.save(user).getId());
+        return userService.getAuthenticatedProfile(userRepository.save(user).getId());
     }
 
     private String extractBearerToken(String authorizationHeader) {

@@ -11,7 +11,7 @@ import lombok.*;
 public class LoginRequestDto {
 
     @NotBlank
-    private String login;
+    private String email;
 
     @NotBlank
     private String motDePasse;

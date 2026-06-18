@@ -5,15 +5,19 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 public class CustomUserDetails implements UserDetails {
 
     private final User user;
+    private final Set<String> resolvedAuthorities;
 
-    public CustomUserDetails(User user) {
+    public CustomUserDetails(User user, Set<String> resolvedAuthorities) {
         this.user = user;
+        this.resolvedAuthorities = resolvedAuthorities;
     }
 
     public User getUser() {
@@ -22,7 +26,7 @@ public class CustomUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
+        return resolvedAuthorities.stream().map(SimpleGrantedAuthority::new).toList();
     }
 
     @Override

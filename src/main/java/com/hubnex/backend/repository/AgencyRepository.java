@@ -7,4 +7,12 @@ import java.util.List;
 
 public interface AgencyRepository extends JpaRepository<Agency, Long> {
     List<Agency> findByHub_Id(Long hubId);
+
+    List<Agency> findByHub_IdIn(List<Long> hubIds);
+
+    long countByActiveTrue();
+
+    long countByActiveFalse();
+
+    long countByHub_Id(Long hubId);
 }

@@ -13,7 +13,6 @@ public class HubResponseDto {
     private Long id;
     private String nom;
     private String barcode;
-    private String ville;
     private String adresse;
     private String telephone;
     private Boolean actif;
